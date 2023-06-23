@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5012fa9e-ac17-4009-bf89-28fecf2122f8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<api-gateway:autodiscovery apiId="18781350" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="aee0baa1-cd9c-4934-8ba4-d39c2055f499" flowRef="mule_projectFlow" />
+	<flow name="mule_projectFlow" doc:id="72a539b5-e66d-4bbd-8535-ef780d3f4e7d" >
+		<http:listener doc:name="Listener" doc:id="aa427a1b-6712-4ed5-836c-7eb36b386bd1" config-ref="HTTP_Listener_config" path="mule"/>
+		<logger level="INFO" doc:name="Logger" doc:id="dc61e515-bc5a-4414-a952-5b31d485f9bc" message="Start"/>
+		<ee:transform doc:name="Transform Message" doc:id="e926c702-36fa-4b4d-832a-377141f54e3a" >
+			<ee:message >
+				<ee:set-payload resource="dwl-transform.dwl" />
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="43314550-c80a-41b0-9805-7109b59815dd" />
+		<ee:transform doc:name="Transform Message" doc:id="a2a78485-1663-4f6c-87ef-6bf730b6ff6e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
